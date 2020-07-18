@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+	KatePart/KDE Syntax Highlighting for Chipper Lang files
+	Copy to ~/.local/share/org.kde.syntax-highlighting/syntax/
+	Works with KEdit, Kate, and any other editors using KatePart
+-->
+<!DOCTYPE language SYSTEM "language.dtd">
+<language name="Chipper Lang" section="Markup" extensions="*.chl" mimetype="" version="4" kateversion="2.4">
+	<highlighting>
+		<contexts>
+			<context name="ChipperLang" attribute="Error" lineEndContext="#stay">
+				<DetectChar char="#" firstNonSpace="true" attribute="Comment" context="Comment"/>
+				<DetectChar char="@" firstNonSpace="true" attribute="Import" context="Import"/>
+				<RegExpr String="^ .*" attribute="Error"/>
+				<RegExpr String="^\t" context="Value"/>
+				<RegExpr String="^.*?:" context="Namespace" lookAhead="true"/>
+			</context>
+			
+			<context name="Namespace" attribute="Namespace" lineEndContext="#pop">
+				<DetectChar attribute="Colon" context="Key" char=":" beginRegion="true" endRegion="true"/>
+				<RegExpr String="[^:]+$" attribute="Error"/>
+				<RegExpr String="[^a-z0-9_]" attribute="Error"/>
+			</context>
+
+			<context name="Key" attribute="Key" lineEndContext="#pop">
+				<DetectChar attribute="Slash" char="/"/>
+				<DetectChar attribute="Parameter" char="}" context="#pop#pop" lookAhead="true"/>
+			</context>
+
+			<context name="Value" attribute="Value" lineEndContext="#pop">
+				<Detect2Chars attribute="Escape" char="\" char1="{"/>
+				<Detect2Chars attribute="Escape" char="\" char1="}"/>
+				<Detect2Chars attribute="Error" char="{" char1="}"/>
+				<DetectChar attribute="Parameter" context="Parameter" char="{"/>
+			</context>
+			
+			<context name="Parameter" attribute="Parameter" lineEndContext="#pop">
+				<DetectChar attribute="Parameter" context="#pop" char="}"/>
+			</context>
+			
+			<context name="Comment" attribute="Comment" lineEndContext="#pop">
+				<StringDetect attribute="Tag" context="#stay" String="XXX"/>
+				<StringDetect attribute="Tag" context="#stay" String="TODO"/>
+				<StringDetect attribute="Tag" context="#stay" String="FIXME"/>
+			</context>
+			<context name="Import" attribute="Import" lineEndContext="#pop">
+			</context>
+		</contexts>
+
+
+		<itemDatas>
+			<itemData name="Namespace" defStyleNum="dsFunction"/>
+			<itemData name="Slash" defStyleNum="dsAttribute"/>
+			<itemData name="Colon" defStyleNum="dsOperator"/>
+			<itemData name="Key" defStyleNum="dsAttribute"/>
+			<itemData name="Error" defStyleNum="dsError"/>
+			<itemData name="Escape" defStyleNum="dsNormal"/>
+			<itemData name="Comment" defStyleNum="dsComment"/>
+			<itemData name="Import" defStyleNum="dsImport"/>
+			<itemData name="Value" defStyleNum="dsNormal"/>
+			<itemData name="Parameter" defStyleNum="dsVariable"/>
+			<itemData name="Tag" defStyleNum="dsAlert"/>
+		</itemDatas>
+	</highlighting>
+
+
+	<general>
+		<comments>
+			<comment name="singleLine" start="#" />
+		</comments>
+	</general>
+</language>

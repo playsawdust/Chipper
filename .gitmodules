@@ -1,0 +1,12 @@
+[submodule "third-party/Splinter"]
+	path = third-party/Splinter
+	url = https://github.com/falkreon/Splinter.git
+[submodule "third-party/Jankson"]
+	path = third-party/Jankson
+	url = https://github.com/falkreon/Jankson.git
+[submodule "third-party/JediTerm"]
+	path = third-party/JediTerm
+	url = https://github.com/JetBrains/jediterm.git
+[submodule "toolbox"]
+	path = toolbox
+	url = https://github.com/playsawdust/Toolbox.git

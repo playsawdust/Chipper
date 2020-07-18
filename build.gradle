@@ -1,0 +1,145 @@
+plugins {
+	id 'eclipse'
+	id 'java-library'
+	id 'net.minecrell.licenser' version '0.4.1'
+//	id 'org.checkerframework' version '0.3.15'
+}
+
+license {
+	include '**/*.java'
+	matching('**/com/playsawdust/chipper/**') {
+		header = rootProject.file('headers/chipper.txt')
+	}
+	matching('**/com/unascribed/asyncsimplelog/**') {
+		header = rootProject.file('headers/asyncsimplelog.txt')
+	}
+	matching('**/org/slf4j/impl/**') {
+		header = rootProject.file('headers/asyncsimplelog.txt')
+	}
+	matching('**/android/util/**') {
+		header = rootProject.file('headers/android.txt')
+	}
+	matching('**/com/unascribed/random/**') {
+		header = rootProject.file('headers/cc0.txt')
+	}
+	matching('**/com/playsawdust/chipper/toolbox/**') {
+		header = rootProject.file('headers/chipper-toolbox.txt')
+	}
+	matching('**/_$ChipperToolbox*') {
+		header = rootProject.file('headers/chipper-toolbox.txt')
+	}
+}
+
+compileJava {
+	sourceCompatibility = '11'
+	targetCompatibility = '11'
+}
+
+repositories {
+	mavenCentral()
+	maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+}
+
+dependencies {
+	api lwjgl('lz4', 'stb', 'rpmalloc', 'sse')
+	api project(':Jankson')
+	api project(':ChipperToolbox')
+	api('com.google.guava:guava:27.0.1-jre') {
+		// we don't want their annotations, we use Checker Framework's
+		transitive = false
+	}
+	api 'com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava'
+	api 'com.google.guava:failureaccess:1.0.1'
+	api 'org.brotli:dec:0.1.2'
+	api 'org.checkerframework:checker-qual:2.5.6'
+	api 'org.ow2.asm:asm:7.0-beta'
+	api 'org.ow2.asm:asm-tree:7.0-beta'
+	api 'com.h2database:h2-mvstore:1.4.200'
+	api 'net.sf.jopt-simple:jopt-simple:6.0-alpha-3'
+	api 'net.java.dev.jna:jna:5.0.0'
+	api 'net.java.dev.jna:jna-platform:5.0.0'
+	api 'it.unimi.dsi:fastutil:8.2.2'
+	api 'dnsjava:dnsjava:2.1.9'
+	api 'org.bouncycastle:bcprov-jdk15on:1.63'
+	api 'com.squareup.okhttp3:okhttp:4.2.0'
+	api 'com.squareup.okhttp3:okhttp-brotli:4.2.0'
+	
+	api 'org.slf4j:slf4j-api:1.7.9'
+	api 'org.slf4j:log4j-over-slf4j:1.7.9'
+	api 'org.slf4j:jul-to-slf4j:1.7.9'
+	api 'org.slf4j:jcl-over-slf4j:1.7.9'
+	
+	testCompile 'junit:junit:4.12'
+}
+
+project(':JediTerm') {
+	apply plugin: 'eclipse'
+	repositories {
+		jcenter()
+	}
+}
+
+allprojects {
+	eclipse.classpath.file.withXml { xml ->
+		// this is AWFUL but I couldn't get asNode to work
+		def ele = xml.asElement()
+		def rules = ele.getOwnerDocument().createElement("accessrules")
+		def ucp = ele.getOwnerDocument().createElement("accessrule")
+		def res = ele.getOwnerDocument().createElement("accessrule")
+		def sig = ele.getOwnerDocument().createElement("accessrule")
+		ucp.setAttribute("kind", "accessible")
+		ucp.setAttribute("pattern", "sun/misc/URLClassPath")
+		res.setAttribute("kind", "accessible")
+		res.setAttribute("pattern", "sun/misc/Resource")
+		sig.setAttribute("kind", "accessible")
+		sig.setAttribute("pattern", "sun/misc/SignalHandler")
+		sig.setAttribute("kind", "forbidden")
+		sig.setAttribute("pattern", "java/awt/**")
+		sig.setAttribute("kind", "forbidden")
+		sig.setAttribute("pattern", "javax/swing/**")
+		sig.setAttribute("kind", "forbidden")
+		sig.setAttribute("pattern", "javafx/**")
+		rules.appendChild(ucp)
+		rules.appendChild(res)
+		rules.appendChild(sig)
+		ele.getChildNodes().find{it.getNodeName() == "classpathentry" && it.getAttribute("kind") == "con"}.appendChild(rules)
+	}
+}
+
+// Checker Framework is absurdly pedantic and is not really something I want to force on others
+// maybe build something later on top of SpotBugs (nee FindBugs)?
+//checkerFramework {
+//	checkers = [
+//		'org.checkerframework.checker.nullness.NullnessChecker',
+//		'org.checkerframework.checker.lock.LockChecker',
+//		'org.checkerframework.checker.tainting.TaintingChecker',
+//		'org.checkerframework.checker.regex.RegexChecker',
+//		'org.checkerframework.checker.guieffect.GuiEffectChecker',
+//		'org.checkerframework.checker.i18n.I18nChecker',
+//		'org.checkerframework.checker.units.UnitsChecker',
+//		'org.checkerframework.common.value.ValueChecker',
+//		'org.checkerframework.common.subtyping.SubtypingChecker'
+//	]
+//	extraJavacArgs = [
+//		'-Aquals=com.playsawdust.chipper.qual.unification.Unified,com.playsawdust.chipper.qual.unification.ClientOnly,com.playsawdust.chipper.qual.unification.ServerOnly,com.playsawdust.chipper.qual.unification.UnknownUnification'
+//	]
+//}
+
+
+def lwjgl(String... modules) {
+	def ver = '3.2.4-SNAPSHOT'
+	def platforms = [ 'linux', 'macos', 'windows' ]
+	
+	def rtrn = []
+	rtrn.add(dependencies.create("org.lwjgl:lwjgl:${ver}"))
+	modules.each { module ->
+		rtrn.add(dependencies.create("org.lwjgl:lwjgl-${module}:${ver}"))
+	}
+	platforms.each { platform ->
+		rtrn.add(dependencies.create("org.lwjgl:lwjgl:${ver}:natives-${platform}"))
+		modules.each { module ->
+			rtrn.add(dependencies.create("org.lwjgl:lwjgl-${module}:${ver}:natives-${platform}"))
+		}
+	}
+	return rtrn
+}

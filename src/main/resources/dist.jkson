@@ -1,0 +1,14 @@
+id: "chipper"
+name: "Chipper"
+version: "0.1"
+author: "the Chipper developers"
+
+loading_background_color: "#9C27B0"
+loading_accessory_color: "#FFFFFF"
+loading_font: "$none"
+
+portable: false
+default_port: 13447
+
+server_terminal_icon: "chipper.png"
+server_terminal_font_ttf: "RobotoMonoForPowerline.ttf"

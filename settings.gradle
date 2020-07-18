@@ -1,0 +1,15 @@
+include "Jankson"
+project(":Jankson").projectDir = file("third-party/Jankson")
+include "Splinter"
+project(":Splinter").projectDir = file("third-party/Splinter")
+
+include "ChipperClient"
+project(":ChipperClient").projectDir = file("client")
+include "ChipperServer"
+project(":ChipperServer").projectDir = file("server")
+
+include "ChipperToolbox"
+project(":ChipperToolbox").projectDir = file("toolbox")
+
+include "JediTerm"
+project(":JediTerm").projectDir = file("third-party/JediTerm/terminal")

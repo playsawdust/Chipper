@@ -1,0 +1,35 @@
+plugins {
+	id 'java'
+	id 'eclipse'
+	id 'net.minecrell.licenser'
+}
+
+license {
+	include '**/*.java'
+	matching('**/com/playsawdust/chipper/**') {
+		header = rootProject.file('headers/chipper.txt')
+	}
+	matching('**/org/joml/Math.java') {
+		header = rootProject.file('headers/chipper.txt')
+	}
+	matching("**/de/jarnbjo/**") {
+		header = rootProject.file('headers/jogg.txt')
+	}
+}
+
+compileJava {
+	sourceCompatibility = '11'
+	targetCompatibility = '11'
+}
+
+repositories {
+	mavenCentral()
+	maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+}
+
+dependencies {
+	compile project(':')
+	compile project(':Splinter')
+	compile lwjgl('glfw', 'openal', 'opengl', 'opus')
+	compile 'org.joml:joml:1.9.12'
+}
