@@ -20,11 +20,11 @@ import com.playsawdust.chipper.toolbox.pool.ObjectPool;
 import com.playsawdust.chipper.toolbox.pool.PooledObject;
 
 /**
- * Represents held modifier keys, aka "bucky bits". This includes Control, Shift, Alt, and Super,
+ * Represents held modifier keys. This includes Control, Shift, Alt, and Super,
  * as well as Num Lock and Caps Lock for convenience.
  */
 public class KeyModifiers implements PooledObject {
-	public enum BuckyBit {
+	public enum KeyModifier {
 		SHIFT(GLFW_MOD_SHIFT),
 		CONTROL(GLFW_MOD_CONTROL),
 		ALT(GLFW_MOD_ALT),
@@ -33,7 +33,7 @@ public class KeyModifiers implements PooledObject {
 		CAPS_LOCK(GLFW_MOD_CAPS_LOCK),
 		;
 		private final int bit;
-		private BuckyBit(int bit) {
+		private KeyModifier(int bit) {
 			this.bit = bit;
 		}
 	}
@@ -58,7 +58,7 @@ public class KeyModifiers implements PooledObject {
 		}
 		@Override
 		public String toString() {
-			return "Bucky.NONE";
+			return "KeyModifiers.NONE";
 		}
 	};
 
@@ -85,7 +85,7 @@ public class KeyModifiers implements PooledObject {
 	 * @param bit the bit to check
 	 * @return {@code true} if the given modifier is held
 	 */
-	public boolean isHeld(BuckyBit bit) {
+	public boolean isHeld(KeyModifier bit) {
 		if (isRecycled()) throw new RecycledObjectException(this);
 		return isSet(bit.bit);
 	}
@@ -122,8 +122,6 @@ public class KeyModifiers implements PooledObject {
 		return isSet(GLFW_MOD_SUPER);
 	}
 
-	// TODO hyper, coakbotel
-
 	/**
 	 * @return {@code true} if Num Lock is enabled
 	 */
@@ -149,7 +147,7 @@ public class KeyModifiers implements PooledObject {
 
 	@Override
 	public String toString() {
-		if (isRecycled()) return "Bucky[RECYCLED]";
+		if (isRecycled()) return "KeyModifiers[RECYCLED]";
 		List<String> li = Lists.newArrayList();
 		if (isShiftHeld()) li.add("shift");
 		if (isControlHeld()) li.add("control");
@@ -157,7 +155,7 @@ public class KeyModifiers implements PooledObject {
 		if (isSuperHeld()) li.add("super");
 		if (isNumLockEnabled()) li.add("numlock");
 		if (isCapsLockEnabled()) li.add("capslock");
-		return "Bucky["+COMMA_JOINER.join(li)+"]";
+		return "KeyModifiers["+COMMA_JOINER.join(li)+"]";
 	}
 
 	@Override
@@ -173,10 +171,10 @@ public class KeyModifiers implements PooledObject {
 		return b;
 	}
 
-	public static KeyModifiers of(BuckyBit... bits) {
+	public static KeyModifiers of(KeyModifier... bits) {
 		KeyModifiers b = pool.get();
 		b.bits = 0;
-		for (BuckyBit bb : bits) {
+		for (KeyModifier bb : bits) {
 			b.bits |= bb.bit;
 		}
 		return b;

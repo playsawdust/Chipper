@@ -249,9 +249,9 @@ public interface Container extends Widget, Iterable<Widget> {
 	}
 
 	@Override
-	default EventResponse onKeyRepeat(Key key, int scancode, KeyModifiers bucky) {
+	default EventResponse onKeyRepeat(Key key, int scancode, KeyModifiers mod) {
 		if (key == Key.TAB && getParent() == null) {
-			if (bucky.isShiftHeld()) {
+			if (mod.isShiftHeld()) {
 				focusPrevious();
 			} else {
 				focusNext();
@@ -262,9 +262,9 @@ public interface Container extends Widget, Iterable<Widget> {
 	}
 
 	@Override
-	default EventResponse onKeyUp(Key key, int scancode, KeyModifiers bucky) {
+	default EventResponse onKeyUp(Key key, int scancode, KeyModifiers mod) {
 		if (key == Key.TAB && getParent() == null) {
-			if (bucky.isShiftHeld()) {
+			if (mod.isShiftHeld()) {
 				focusPrevious();
 			} else {
 				focusNext();
@@ -275,7 +275,7 @@ public interface Container extends Widget, Iterable<Widget> {
 	}
 
 	@Override
-	default EventResponse onClick(@CanvasPixels double x, @CanvasPixels double y, KeyModifiers bucky) {
+	default EventResponse onClick(@CanvasPixels double x, @CanvasPixels double y, KeyModifiers mod) {
 		requestFocus(null);
 		return EventResponse.PASS;
 	}

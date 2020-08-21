@@ -52,7 +52,7 @@ public interface WindowInputListener extends InputEventProcessor {
 	 * @param button the pressed mouse button
 	 * @param x the x coordinate of the mouse
 	 * @param y the y coordinate of the mouse
-	 * @param bucky a Bucky object representing the held modifier keys (aka "bucky bits")
+	 * @param mod a KeyModifiers object representing the held modifier keys
 	 * @return your response to this event, either {@link EventResponse#PASS PASS} or {@link EventResponse#ACCEPT ACCEPT}
 	 * @see #onClick
 	 * @see #onAlternateClick
@@ -61,7 +61,7 @@ public interface WindowInputListener extends InputEventProcessor {
 	 */
 	@Override
 	@RequiresLayout
-	default EventResponse onMouseDown(int button, @CanvasPixels double x, @CanvasPixels double y, KeyModifiers bucky) {
+	default EventResponse onMouseDown(int button, @CanvasPixels double x, @CanvasPixels double y, KeyModifiers mod) {
 		return EventResponse.PASS;
 	}
 
@@ -87,7 +87,7 @@ public interface WindowInputListener extends InputEventProcessor {
 	 * @param button the pressed mouse button
 	 * @param x the x coordinate of the mouse
 	 * @param y the y coordinate of the mouse
-	 * @param bucky a Bucky object representing the held modifier keys (aka "bucky bits")
+	 * @param mod a KeyModifiers object representing the held modifier keys
 	 * @return your response to this event, either {@link EventResponse#PASS PASS} or {@link EventResponse#ACCEPT ACCEPT}
 	 * @see #onClick
 	 * @see #onAlternateClick
@@ -96,7 +96,7 @@ public interface WindowInputListener extends InputEventProcessor {
 	 */
 	@Override
 	@RequiresLayout
-	default EventResponse onMouseUp(int button, @CanvasPixels double x, @CanvasPixels double y, KeyModifiers bucky) {
+	default EventResponse onMouseUp(int button, @CanvasPixels double x, @CanvasPixels double y, KeyModifiers mod) {
 		return EventResponse.PASS;
 	}
 
@@ -105,12 +105,12 @@ public interface WindowInputListener extends InputEventProcessor {
 	 * window's top left corner.
 	 * @param x the x coordinate of the mouse
 	 * @param y the y coordinate of the mouse
-	 * @param bucky a Bucky object representing the held modifier keys (aka "bucky bits")
+	 * @param mod a KeyModifiers object representing the held modifier keys
 	 * @return your response to this event, either {@link EventResponse#PASS PASS} or {@link EventResponse#ACCEPT ACCEPT}
 	 */
 	@Override
 	@RequiresLayout
-	default EventResponse onClick(@CanvasPixels double x, @CanvasPixels double y, KeyModifiers bucky) {
+	default EventResponse onClick(@CanvasPixels double x, @CanvasPixels double y, KeyModifiers mod) {
 		return EventResponse.PASS;
 	}
 
@@ -119,12 +119,12 @@ public interface WindowInputListener extends InputEventProcessor {
 	 * X and Y are relative to the window's top left corner.
 	 * @param x the x coordinate of the mouse
 	 * @param y the y coordinate of the mouse
-	 * @param bucky a Bucky object representing the held modifier keys (aka "bucky bits")
+	 * @param mod a KeyModifiers object representing the held modifier keys
 	 * @return your response to this event, either {@link EventResponse#PASS PASS} or {@link EventResponse#ACCEPT ACCEPT}
 	 */
 	@Override
 	@RequiresLayout
-	default EventResponse onAlternateClick(@CanvasPixels double x, @CanvasPixels double y, KeyModifiers bucky) {
+	default EventResponse onAlternateClick(@CanvasPixels double x, @CanvasPixels double y, KeyModifiers mod) {
 		return EventResponse.PASS;
 	}
 
@@ -148,12 +148,12 @@ public interface WindowInputListener extends InputEventProcessor {
 	 * X and Y are relative to the window's top left corner.
 	 * @param x the x coordinate of the mouse
 	 * @param y the y coordinate of the mouse
-	 * @param bucky a Bucky object representing the held modifier keys (aka "bucky bits")
+	 * @param mod a KeyModifiers object representing the held modifier keys
 	 * @return your response to this event, either {@link EventResponse#PASS PASS} or {@link EventResponse#ACCEPT ACCEPT}
 	 */
 	@Override
 	@RequiresLayout
-	default EventResponse onBack(@CanvasPixels double x, @CanvasPixels double y, KeyModifiers bucky) {
+	default EventResponse onBack(@CanvasPixels double x, @CanvasPixels double y, KeyModifiers mod) {
 		return EventResponse.PASS;
 	}
 
@@ -166,7 +166,7 @@ public interface WindowInputListener extends InputEventProcessor {
 	 */
 	@Override
 	@RequiresLayout
-	default EventResponse onForward(@CanvasPixels double x, @CanvasPixels double y, KeyModifiers bucky) {
+	default EventResponse onForward(@CanvasPixels double x, @CanvasPixels double y, KeyModifiers mod) {
 		return EventResponse.PASS;
 	}
 
@@ -213,11 +213,11 @@ public interface WindowInputListener extends InputEventProcessor {
 	 * Called when the window has the focus and a key is pressed.
 	 * @param key the abstract representation of the key
 	 * @param scancode the raw platform-specific ephemeral scancode, for if key is {@code UNKNOWN}
-	 * @param bucky a Bucky object representing the held modifier keys (aka "bucky bits")
+	 * @param mod a KeyModifiers object representing the held modifier keys
 	 * @return your response to this event, either {@link EventResponse#PASS PASS} or {@link EventResponse#ACCEPT ACCEPT}
 	 */
 	@Override
-	default EventResponse onKeyDown(Key key, int scancode, KeyModifiers bucky) {
+	default EventResponse onKeyDown(Key key, int scancode, KeyModifiers mod) {
 		return EventResponse.PASS;
 	}
 
@@ -225,11 +225,11 @@ public interface WindowInputListener extends InputEventProcessor {
 	 * Called when the window has the focus and a key is released.
 	 * @param key the abstract representation of the key
 	 * @param scancode the raw platform-specific ephemeral scancode, for if key is {@code UNKNOWN}
-	 * @param bucky a Bucky object representing the held modifier keys (aka "bucky bits")
+	 * @param mod a KeyModifiers object representing the held modifier keys
 	 * @return your response to this event, either {@link EventResponse#PASS PASS} or {@link EventResponse#ACCEPT ACCEPT}
 	 */
 	@Override
-	default EventResponse onKeyUp(Key key, int scancode, KeyModifiers bucky) {
+	default EventResponse onKeyUp(Key key, int scancode, KeyModifiers mod) {
 		return EventResponse.PASS;
 	}
 
@@ -239,11 +239,11 @@ public interface WindowInputListener extends InputEventProcessor {
 	 * dependent and often configurable by the user.
 	 * @param key the abstract representation of the key
 	 * @param scancode the raw platform-specific ephemeral scancode, for if key is {@code UNKNOWN}
-	 * @param bucky a Bucky object representing the held modifier keys (aka "bucky bits")
+	 * @param mod a KeyModifiers object representing the held modifier keys
 	 * @return your response to this event, either {@link EventResponse#PASS PASS} or {@link EventResponse#ACCEPT ACCEPT}
 	 */
 	@Override
-	default EventResponse onKeyRepeat(Key key, int scancode, KeyModifiers bucky) {
+	default EventResponse onKeyRepeat(Key key, int scancode, KeyModifiers mod) {
 		return EventResponse.PASS;
 	}
 

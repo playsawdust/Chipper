@@ -167,32 +167,32 @@ public final class DefaultEvent implements Event, PooledObject {
 		return de;
 	}
 
-	public static DefaultEvent mouseDown(Context<ClientEngine> context, int button, double x, double y, KeyModifiers bucky) {
-		return get(context, TYPE_MOUSE_DOWN).int1(button).double1(x).double2(y).object1(bucky);
+	public static DefaultEvent mouseDown(Context<ClientEngine> context, int button, double x, double y, KeyModifiers mod) {
+		return get(context, TYPE_MOUSE_DOWN).int1(button).double1(x).double2(y).object1(mod);
 	}
 
-	public static DefaultEvent mouseUp(Context<ClientEngine> context, int button, double x, double y, KeyModifiers bucky) {
-		return get(context, TYPE_MOUSE_UP).int1(button).double1(x).double2(y).object1(bucky);
+	public static DefaultEvent mouseUp(Context<ClientEngine> context, int button, double x, double y, KeyModifiers mod) {
+		return get(context, TYPE_MOUSE_UP).int1(button).double1(x).double2(y).object1(mod);
 	}
 
-	public static DefaultEvent click(Context<ClientEngine> context, double x, double y, KeyModifiers bucky) {
-		return get(context, TYPE_CLICK).double1(x).double2(y).object1(bucky);
+	public static DefaultEvent click(Context<ClientEngine> context, double x, double y, KeyModifiers mod) {
+		return get(context, TYPE_CLICK).double1(x).double2(y).object1(mod);
 	}
 
-	public static DefaultEvent alternateClick(Context<ClientEngine> context, double x, double y, KeyModifiers bucky) {
-		return get(context, TYPE_ALTERNATE_CLICK).double1(x).double2(y).object1(bucky);
+	public static DefaultEvent alternateClick(Context<ClientEngine> context, double x, double y, KeyModifiers mod) {
+		return get(context, TYPE_ALTERNATE_CLICK).double1(x).double2(y).object1(mod);
 	}
 
 	public static DefaultEvent scroll(Context<ClientEngine> context, double x, double y, double xscroll, double yscroll) {
 		return get(context, TYPE_SCROLL).double1(x).double2(y).double3(xscroll).double4(yscroll);
 	}
 
-	public static DefaultEvent back(Context<ClientEngine> context, double x, double y, KeyModifiers bucky) {
-		return get(context, TYPE_BACK).double1(x).double2(y).object1(bucky);
+	public static DefaultEvent back(Context<ClientEngine> context, double x, double y, KeyModifiers mod) {
+		return get(context, TYPE_BACK).double1(x).double2(y).object1(mod);
 	}
 
-	public static DefaultEvent forward(Context<ClientEngine> context, double x, double y, KeyModifiers bucky) {
-		return get(context, TYPE_FORWARD).double1(x).double2(y).object1(bucky);
+	public static DefaultEvent forward(Context<ClientEngine> context, double x, double y, KeyModifiers mod) {
+		return get(context, TYPE_FORWARD).double1(x).double2(y).object1(mod);
 	}
 
 	public static DefaultEvent enter(Context<ClientEngine> context, double x, double y) {
@@ -207,16 +207,16 @@ public final class DefaultEvent implements Event, PooledObject {
 		return get(context, TYPE_LEAVE).double1(x).double2(y);
 	}
 
-	public static DefaultEvent keyDown(Context<ClientEngine> context, Key key, int scancode, KeyModifiers bucky) {
-		return get(context, TYPE_KEY_DOWN).object1(key).int1(scancode).object2(bucky);
+	public static DefaultEvent keyDown(Context<ClientEngine> context, Key key, int scancode, KeyModifiers mod) {
+		return get(context, TYPE_KEY_DOWN).object1(key).int1(scancode).object2(mod);
 	}
 
-	public static DefaultEvent keyUp(Context<ClientEngine> context, Key key, int scancode, KeyModifiers bucky) {
-		return get(context, TYPE_KEY_UP).object1(key).int1(scancode).object2(bucky);
+	public static DefaultEvent keyUp(Context<ClientEngine> context, Key key, int scancode, KeyModifiers mod) {
+		return get(context, TYPE_KEY_UP).object1(key).int1(scancode).object2(mod);
 	}
 
-	public static DefaultEvent keyRepeat(Context<ClientEngine> context, Key key, int scancode, KeyModifiers bucky) {
-		return get(context, TYPE_KEY_REPEAT).object1(key).int1(scancode).object2(bucky);
+	public static DefaultEvent keyRepeat(Context<ClientEngine> context, Key key, int scancode, KeyModifiers mod) {
+		return get(context, TYPE_KEY_REPEAT).object1(key).int1(scancode).object2(mod);
 	}
 
 	public static DefaultEvent textEntered(Context<ClientEngine> context, int codepoint) {
@@ -267,12 +267,12 @@ public final class DefaultEvent implements Event, PooledObject {
 		EventResponse on(InputEventProcessor w, double x, double y);
 	}
 
-	private interface BuckyClickEventMethod {
-		EventResponse on(InputEventProcessor w, double x, double y, KeyModifiers bucky);
+	private interface KeyModifiersClickEventMethod {
+		EventResponse on(InputEventProcessor w, double x, double y, KeyModifiers mod);
 	}
 
-	private interface BuckyClickButtonEventMethod {
-		EventResponse on(InputEventProcessor w, int button, double x, double y, KeyModifiers bucky);
+	private interface KeyModifiersClickButtonEventMethod {
+		EventResponse on(InputEventProcessor w, int button, double x, double y, KeyModifiers mod);
 	}
 
 	private interface ScrollEventMethod {
@@ -284,35 +284,35 @@ public final class DefaultEvent implements Event, PooledObject {
 		private final String type;
 		private ClickEventMethod clickMethod;
 		private ScrollEventMethod scrollMethod;
-		private BuckyClickEventMethod buckyMethod;
-		private BuckyClickButtonEventMethod buckyButtonMethod;
+		private KeyModifiersClickEventMethod modMethod;
+		private KeyModifiersClickButtonEventMethod modButtonMethod;
 		private ClickIshEventType(String type, ClickEventMethod method) {
 			this.type = type;
 			this.clickMethod = method;
 			this.scrollMethod = null;
-			this.buckyMethod = null;
-			this.buckyButtonMethod = null;
+			this.modMethod = null;
+			this.modButtonMethod = null;
 		}
 		private ClickIshEventType(String type, ScrollEventMethod method) {
 			this.type = type;
 			this.clickMethod = null;
 			this.scrollMethod = method;
-			this.buckyMethod = null;
-			this.buckyButtonMethod = null;
+			this.modMethod = null;
+			this.modButtonMethod = null;
 		}
-		private ClickIshEventType(String type, BuckyClickEventMethod method) {
+		private ClickIshEventType(String type, KeyModifiersClickEventMethod method) {
 			this.type = type;
 			this.clickMethod = null;
 			this.scrollMethod = null;
-			this.buckyMethod = method;
-			this.buckyButtonMethod = null;
+			this.modMethod = method;
+			this.modButtonMethod = null;
 		}
-		private ClickIshEventType(String type, BuckyClickButtonEventMethod method) {
+		private ClickIshEventType(String type, KeyModifiersClickButtonEventMethod method) {
 			this.type = type;
 			this.clickMethod = null;
 			this.scrollMethod = null;
-			this.buckyMethod = null;
-			this.buckyButtonMethod = method;
+			this.modMethod = null;
+			this.modButtonMethod = method;
 		}
 		@Override
 		public EventResponse visit(DefaultEvent event, EventProcessor ep) {
@@ -329,10 +329,10 @@ public final class DefaultEvent implements Event, PooledObject {
 					return clickMethod.on(iep, point.getX(), point.getY());
 				} else if (scrollMethod != null) {
 					return scrollMethod.on(iep, point.getX(), point.getY(), event.double3, event.double4);
-				} else if (buckyMethod != null) {
-					return buckyMethod.on(iep, point.getX(), point.getY(), (KeyModifiers)event.object1);
-				} else if (buckyButtonMethod != null) {
-					return buckyButtonMethod.on(iep, event.int1, point.getX(), point.getY(), (KeyModifiers)event.object1);
+				} else if (modMethod != null) {
+					return modMethod.on(iep, point.getX(), point.getY(), (KeyModifiers)event.object1);
+				} else if (modButtonMethod != null) {
+					return modButtonMethod.on(iep, event.int1, point.getX(), point.getY(), (KeyModifiers)event.object1);
 				} else {
 					throw new AssertionError();
 				}
@@ -375,10 +375,10 @@ public final class DefaultEvent implements Event, PooledObject {
 				return "type="+type+",x="+de.double1+",y="+de.double2;
 			} else if (scrollMethod != null) {
 				return "type="+type+",x="+de.double1+",y="+de.double2+",xscroll="+de.double3+",yscroll="+de.double4;
-			} else if (buckyMethod != null) {
-				return "type="+type+",x="+de.double1+",y="+de.double2+",bucky="+de.object1;
-			} else if (buckyButtonMethod != null) {
-				return "type="+type+",button="+de.int1+",x="+de.double1+",y="+de.double2+",bucky="+de.object1;
+			} else if (modMethod != null) {
+				return "type="+type+",x="+de.double1+",y="+de.double2+",mod="+de.object1;
+			} else if (modButtonMethod != null) {
+				return "type="+type+",button="+de.int1+",x="+de.double1+",y="+de.double2+",mod="+de.object1;
 			} else {
 				throw new AssertionError();
 			}
@@ -417,7 +417,7 @@ public final class DefaultEvent implements Event, PooledObject {
 	}
 
 	private interface KeyEventMethod {
-		EventResponse on(InputEventProcessor w, Key key, int scancode, KeyModifiers bucky);
+		EventResponse on(InputEventProcessor w, Key key, int scancode, KeyModifiers mod);
 	}
 
 	private static class KeyEventType implements EventType {
@@ -444,7 +444,7 @@ public final class DefaultEvent implements Event, PooledObject {
 		}
 		@Override
 		public String toString(DefaultEvent de) {
-			return "type="+type+",key="+de.object1+",scancode="+de.int1+",bucky="+de.object2;
+			return "type="+type+",key="+de.object1+",scancode="+de.int1+",mod="+de.object2;
 		}
 	}
 

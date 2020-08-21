@@ -20,19 +20,19 @@ import com.playsawdust.chipper.client.widget.Widget;
  */
 public interface InputEventProcessor extends EventProcessor {
 
-	EventResponse onMouseDown(int button, @CanvasPixels double x, @CanvasPixels double y, KeyModifiers bucky);
-	EventResponse onMouseUp(int button, @CanvasPixels double x, @CanvasPixels double y, KeyModifiers bucky);
-	EventResponse onClick(@CanvasPixels double x, @CanvasPixels double y, KeyModifiers bucky);
-	EventResponse onAlternateClick(@CanvasPixels double x, @CanvasPixels double y, KeyModifiers bucky);
+	EventResponse onMouseDown(int button, @CanvasPixels double x, @CanvasPixels double y, KeyModifiers mod);
+	EventResponse onMouseUp(int button, @CanvasPixels double x, @CanvasPixels double y, KeyModifiers mod);
+	EventResponse onClick(@CanvasPixels double x, @CanvasPixels double y, KeyModifiers mod);
+	EventResponse onAlternateClick(@CanvasPixels double x, @CanvasPixels double y, KeyModifiers mod);
 	EventResponse onScroll(@CanvasPixels double x, @CanvasPixels double y, double xscroll, double yscroll);
-	EventResponse onBack(@CanvasPixels double x, @CanvasPixels double y, KeyModifiers bucky);
-	EventResponse onForward(@CanvasPixels double x, @CanvasPixels double y, KeyModifiers bucky);
+	EventResponse onBack(@CanvasPixels double x, @CanvasPixels double y, KeyModifiers mod);
+	EventResponse onForward(@CanvasPixels double x, @CanvasPixels double y, KeyModifiers mod);
 	EventResponse onEnter(@CanvasPixels double x, @CanvasPixels double y);
 	EventResponse onMove(@CanvasPixels double x, @CanvasPixels double y);
 	EventResponse onLeave(@CanvasPixels double x, @CanvasPixels double y);
-	EventResponse onKeyDown(Key key, int scancode, KeyModifiers bucky);
-	EventResponse onKeyUp(Key key, int scancode, KeyModifiers bucky);
-	EventResponse onKeyRepeat(Key key, int scancode, KeyModifiers bucky);
+	EventResponse onKeyDown(Key key, int scancode, KeyModifiers mod);
+	EventResponse onKeyUp(Key key, int scancode, KeyModifiers mod);
+	EventResponse onKeyRepeat(Key key, int scancode, KeyModifiers mod);
 	EventResponse onTextEntered(int codepoint);
 	EventResponse onFocusGained();
 	EventResponse onFocusLost();

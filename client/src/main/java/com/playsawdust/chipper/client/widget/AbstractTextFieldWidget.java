@@ -158,12 +158,12 @@ public abstract class AbstractTextFieldWidget extends TextWidget {
 	}
 
 	@Override
-	public EventResponse onClick(@CanvasPixels double x, @CanvasPixels double y, KeyModifiers bucky) {
+	public EventResponse onClick(@CanvasPixels double x, @CanvasPixels double y, KeyModifiers mod) {
 		return EventResponse.ACCEPT;
 	}
 
 	@Override
-	public EventResponse onMouseDown(int button, @CanvasPixels double x, @CanvasPixels double y, KeyModifiers bucky) {
+	public EventResponse onMouseDown(int button, @CanvasPixels double x, @CanvasPixels double y, KeyModifiers mod) {
 		if (button == 0) {
 			if (getParent() != null) {
 				getParent().requestFocus(this);
@@ -183,7 +183,7 @@ public abstract class AbstractTextFieldWidget extends TextWidget {
 	}
 
 	@Override
-	public EventResponse onMouseUp(int button, @CanvasPixels double x, @CanvasPixels double y, KeyModifiers bucky) {
+	public EventResponse onMouseUp(int button, @CanvasPixels double x, @CanvasPixels double y, KeyModifiers mod) {
 		if (button == 0) {
 			mouseDown = false;
 		}
@@ -197,14 +197,14 @@ public abstract class AbstractTextFieldWidget extends TextWidget {
 	}
 
 	@Override
-	public EventResponse onKeyDown(Key key, int scancode, KeyModifiers bucky) {
-		return onKeyRepeat(key, scancode, bucky);
+	public EventResponse onKeyDown(Key key, int scancode, KeyModifiers mod) {
+		return onKeyRepeat(key, scancode, mod);
 	}
 
 	@Override
-	public EventResponse onKeyRepeat(Key key, int scancode, KeyModifiers bucky) {
+	public EventResponse onKeyRepeat(Key key, int scancode, KeyModifiers mod) {
 		if (key == Key.UNKNOWN) return EventResponse.PASS;
-		int i = key.getGlfwKeyCode() | (bucky.toGlfwModifiers() << 16);
+		int i = key.getGlfwKeyCode() | (mod.toGlfwModifiers() << 16);
 		switch (i) {
 			case GLFW_KEY_ESCAPE:
 				if (getParent() != null) {

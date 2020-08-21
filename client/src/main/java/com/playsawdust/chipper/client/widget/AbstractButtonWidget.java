@@ -62,7 +62,7 @@ public abstract class AbstractButtonWidget extends TextWidget {
 	}
 
 	@Override
-	public EventResponse onClick(@CanvasPixels double x, @CanvasPixels double y, KeyModifiers bucky) {
+	public EventResponse onClick(@CanvasPixels double x, @CanvasPixels double y, KeyModifiers mod) {
 		if (onClick != null) {
 			onClick.run();
 			return EventResponse.ACCEPT;
@@ -71,7 +71,7 @@ public abstract class AbstractButtonWidget extends TextWidget {
 	}
 
 	@Override
-	public EventResponse onAlternateClick(@CanvasPixels double x, @CanvasPixels double y, KeyModifiers bucky) {
+	public EventResponse onAlternateClick(@CanvasPixels double x, @CanvasPixels double y, KeyModifiers mod) {
 		if (onAlternateClick != null) {
 			onAlternateClick.run();
 			return EventResponse.ACCEPT;
@@ -92,9 +92,9 @@ public abstract class AbstractButtonWidget extends TextWidget {
 	}
 
 	@Override
-	public EventResponse onKeyUp(Key key, int scancode, KeyModifiers bucky) {
+	public EventResponse onKeyUp(Key key, int scancode, KeyModifiers mod) {
 		if (key == Key.ENTER || key == Key.SPACE) {
-			if (bucky.isShiftHeld() || bucky.isControlHeld()) {
+			if (mod.isShiftHeld() || mod.isControlHeld()) {
 				onAlternateClick(0, 0, KeyModifiers.NONE);
 			} else {
 				onClick(0, 0, KeyModifiers.NONE);
