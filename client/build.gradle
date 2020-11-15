@@ -27,9 +27,10 @@ repositories {
 	maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
 }
 
+def chipper = (rootProject.name == 'Chipper' ? project(':') : project(':Chipper'))
+
 dependencies {
-	compile project(':')
+	compile chipper
 	compile project(':Splinter')
-	compile lwjgl('glfw', 'openal', 'opengl', 'opus')
-	compile 'org.joml:joml:1.9.12'
+	compile chipper.lwjgl('glfw', 'openal', 'opengl', 'opus')
 }

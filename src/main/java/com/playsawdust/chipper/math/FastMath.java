@@ -144,20 +144,25 @@ public final strictfp class FastMath {
 	 * a {@code progress} of 0 returns {@code a}, a {@code progress} of 1
 	 * returns {@code b}, and a {@code progress} of 0.5 returns a value halfway
 	 * between them.
+	 * <p>
+	 * <i>When used for non-looping animation, this looks ugly and robotic.</i>
+	 * Prefer {@link #ease} where it makes sense.
 	 */
 	public static double lerp(double a, double b, double progress) {
 		return a + (clamp(progress, 0, 1) * (b - a));
 	}
 
 	/**
-	 * Return a sinusoidal interpolation between {@code a} and {@code b}, where
-	 * a {@code progress} of 0 returns {@code a}, and a {@code progress} of 1
-	 * returns {@code b}. Other behaviors of this function are hard to concisely
-	 * define; suffice to say, there is a bias on either end of the interpolation,
-	 * resulting in a smooth <i>ease</i> effect when used for animation.
+	 * Return a quintic "s-curve" interpolation between {@code a} and {@code b},
+	 * where a {@code progress} of 0 returns {@code a}, and a {@code progress}
+	 * of 1 returns {@code b}. This can be used for the well-known natural-looking
+	 * "ease" effect that starts slow and ends slow, with a speedup in the middle.
 	 */
 	public static double ease(double a, double b, double progress) {
-		return a + (b-a)*(sin(clamp(progress, 0, 1)*HALF_PI));
+		double a3 = progress * progress * progress;
+		double a4 = a3 * progress;
+		double a5 = a4 * progress;
+		return a+((b-a)*((6 * a5) - (15 * a4) + (10 * a3)));
 	}
 
 	private static final double[] ASIN_LOOKUP = generateLookupTable(2048, -1, 1, StrictMath::asin);

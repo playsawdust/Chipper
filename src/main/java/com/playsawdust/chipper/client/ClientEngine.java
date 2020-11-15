@@ -1,42 +1,74 @@
-/*
- * Chipper - an open polyglot game engine
- * Copyright (C) 2019-2020 the Chipper developers
- *
- * This Source Code Form is subject to the terms of the Mozilla Public
- * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/.
- */
-
 package com.playsawdust.chipper.client;
 
-import com.playsawdust.chipper.Addon;
 import com.playsawdust.chipper.component.Engine;
-import com.playsawdust.chipper.component.EngineType;
+import com.playsawdust.chipper.math.ProtoColor;
 
-/**
- * Dummy class. Replaced by the
- * <a href="../../../../../../../client/src/main/java/com/playsawdust/chipper/client/ClientEngine.java">actual ClientEngine</a>
- * in the client codebase for client builds.
- */
-public class ClientEngine implements Engine {
+public interface ClientEngine extends Engine {
 
-	public ClientEngine() {
-		throw new UnsupportedOperationException();
-	}
+	void setLoadingMessage(String loadingMessage);
 
-	@Override
-	public Addon getDefaultAddon() {
-		throw new UnsupportedOperationException();
-	}
+	void quit();
 
-	@Override
-	public int run(String... args) {
-		throw new UnsupportedOperationException();
-	}
+	/**
+	 * Switch to the given GameState, performing proper cleanup of the current GameState, if any.
+	 */
+	void switchToState(GameState state);
 
-	@Override
-	public EngineType getType() {
-		throw new UnsupportedOperationException();
-	}
+	// TODO all of these need to get moved into some kind of settings manager
+	void setBlurStrength(int blurStrength);
+
+	int getBlurStrength();
+
+	void setGlassColor(ProtoColor color);
+
+	void setGlassOpacity(double opacity);
+
+	ProtoColor getGlassColor();
+
+	double getGlassOpacity();
+
+	void setCanvasPixelScaleSetting(int canvasPixelScaleSetting);
+
+	boolean getLimitResolution();
+
+	void setLimitResolution(boolean limitResolution);
+
+	boolean getLimitResolutionLinear();
+
+	boolean getDrawMouseOnCanvas();
+
+	void setLimitResolutionLinear(boolean limitResolutionLinear);
+
+	void setDrawMouseOnCanvas(boolean drawMouseOnCanvas);
+
+	int getCanvasPixelScaleSetting();
+
+	int getCanvasPixelScale();
+	
+	int getWindowWidth();
+
+	int getWindowHeight();
+
+	int getFramesPerSecond();
+
+	double getMillisPerFrame();
+
+	boolean isKeyDown(int key);
+
+	boolean isFocused();
+
+	void grabCursor();
+
+	void releaseCursor();
+
+	boolean isCursorGrabbed();
+
+	int getMouseClick();
+
+	boolean isMouseDown(int button);
+
+	double getCursorX();
+
+	double getCursorY();
 
 }

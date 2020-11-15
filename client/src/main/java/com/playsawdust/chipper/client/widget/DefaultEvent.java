@@ -15,6 +15,7 @@ import java.security.Permission;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import com.playsawdust.chipper.client.ClientEngine;
+import com.playsawdust.chipper.client.ClientEngineImpl;
 import com.playsawdust.chipper.client.EventProcessor;
 import com.playsawdust.chipper.client.EventProcessor.Event;
 import com.playsawdust.chipper.client.input.KeyModifiers;
@@ -395,7 +396,7 @@ public final class DefaultEvent implements Event, PooledObject {
 			if (!(ep instanceof InputEventProcessor)) return EventResponse.PASS;
 			InputEventProcessor iep = (InputEventProcessor)ep;
 			EventResponse rtrn = super.visit(event, ep);
-			event.context.getEngine().addThingToEnteredList(iep);
+			((ClientEngineImpl)event.context.getEngine()).addThingToEnteredList(iep);
 			return rtrn;
 		}
 	}
@@ -409,7 +410,7 @@ public final class DefaultEvent implements Event, PooledObject {
 		public EventResponse visit(DefaultEvent event, EventProcessor ep) {
 			if (!(ep instanceof InputEventProcessor)) return EventResponse.PASS;
 			InputEventProcessor iep = (InputEventProcessor)ep;
-			if (!event.context.getEngine().isThingInEnteredList(iep)) {
+			if (!((ClientEngineImpl)event.context.getEngine()).isThingInEnteredList(iep)) {
 				TYPE_ENTER.visit(event, iep);
 			}
 			return super.visit(event, iep);

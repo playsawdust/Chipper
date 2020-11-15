@@ -14,8 +14,6 @@ import org.slf4j.LoggerFactory;
 
 import com.playsawdust.chipper.component.Context;
 
-import com.playsawdust.chipper.client.component.LayerController;
-
 /**
  * Lifecycle class representing a "state" the game can be in, such as "main menu" or "in-game".
  * Generally responsible for setting up root Renderables and widget layers.

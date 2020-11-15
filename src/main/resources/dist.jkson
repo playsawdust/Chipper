@@ -1,6 +1,7 @@
 id: "chipper"
 name: "Chipper"
-version: "0.1"
+// version is only optional when id is "chipper", in which case it uses the chipper version
+//version: "0.1"
 author: "the Chipper developers"
 
 loading_background_color: "#9C27B0"
@@ -8,7 +9,11 @@ loading_accessory_color: "#FFFFFF"
 loading_font: "$none"
 
 portable: false
+// 13447 is Sawdust's port; you probably want something else
+// https://www.random.org/integers/?num=1&min=10240&max=65535&col=1&base=10&format=html&rnd=new
 default_port: 13447
 
 server_terminal_icon: "chipper.png"
 server_terminal_font_ttf: "RobotoMonoForPowerline.ttf"
+
+//default_addon: "com.mygame.MyAddon"

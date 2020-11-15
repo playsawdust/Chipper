@@ -44,6 +44,7 @@ public class Distribution {
 	public static final int DEFAULT_PORT;
 	public static final String SERVER_TERMINAL_ICON;
 	public static final String SERVER_TERMINAL_FONT_TTF;
+	public static final String DEFAULT_ADDON;
 
 	// https://stackoverflow.com/a/31976060
 	private static final ImmutableSet<String> ILLEGAL_WINDOWS_FILENAMES = ImmutableSet.of(
@@ -71,7 +72,7 @@ public class Distribution {
 						NAME.endsWith(" ") || NAME.endsWith(".")) {
 					throw new IllegalArgumentException("name field must be a valid filename on Windows and Linux");
 				}
-				VERSION = getRequired(obj, "version");
+				VERSION = ID.equals("chipper") ? CHIPPER_VERSION : getRequired(obj, "version");
 				AUTHOR = getRequired(obj, "author");
 				LOADING_BACKGROUND_COLOR = ProtoColor.parse(getRequired(obj, "loading_background_color"));
 				LOADING_ACCESSORY_COLOR = ProtoColor.parse(getRequired(obj, "loading_accessory_color"));
@@ -94,6 +95,11 @@ public class Distribution {
 					SERVER_TERMINAL_FONT_TTF = ((JsonPrimitive)obj.get("server_terminal_font_ttf")).asString();
 				} else {
 					SERVER_TERMINAL_FONT_TTF = null;
+				}
+				if (obj.containsKey("default_addon")) {
+					DEFAULT_ADDON = ((JsonPrimitive)obj.get("default_addon")).asString();
+				} else {
+					DEFAULT_ADDON = null;
 				}
 			}
 		} catch (IOException e) {

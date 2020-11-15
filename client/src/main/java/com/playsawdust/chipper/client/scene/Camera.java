@@ -9,5 +9,7 @@
 
 package com.playsawdust.chipper.client.scene;
 
+import com.playsawdust.chipper.SceneObject;
+
 public class Camera extends SceneObject {
 }

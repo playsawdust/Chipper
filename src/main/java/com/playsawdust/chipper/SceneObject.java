@@ -7,7 +7,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-package com.playsawdust.chipper.client.scene;
+package com.playsawdust.chipper;
 
 import org.checkerframework.checker.units.qual.radians;
 import org.joml.Vector3d;

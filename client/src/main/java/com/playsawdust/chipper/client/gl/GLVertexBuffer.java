@@ -17,18 +17,13 @@ import static org.lwjgl.opengl.ARBHalfFloatVertex.*;
 import android.util.Half;
 
 import org.checkerframework.checker.guieffect.qual.UIType;
-import org.lwjgl.opengl.ARBVertexBufferObject;
 import org.lwjgl.opengl.GL;
-import org.lwjgl.opengl.GL20;
-
 import com.playsawdust.chipper.AbstractNativeResource;
 import com.playsawdust.chipper.math.FastMath;
 import com.playsawdust.chipper.math.ProtoColor;
 
 import com.playsawdust.chipper.client.gl.builder.DisplayListVertexBuilder;
 import com.playsawdust.chipper.client.gl.builder.VertexBuilder;
-import com.playsawdust.chipper.client.gl.builder.VertexBuilder.Format;
-
 import java.nio.ByteBuffer;
 
 /**
@@ -140,7 +135,7 @@ public abstract class GLVertexBuffer extends AbstractNativeResource {
 		// ATTN should we always use display lists on nVidia?
 		// there's inklings around of nV drivers being faster with display lists than VBOs
 		// needs testing.
-		if (GL.getCapabilities().GL_ARB_vertex_buffer_object) {
+		if (GL.getCapabilities().GL_ARB_vertex_buffer_object && GL.getCapabilities().glEnableClientState > 0) {
 			return new ImplVBO();
 		} else {
 			return new ImplDL();

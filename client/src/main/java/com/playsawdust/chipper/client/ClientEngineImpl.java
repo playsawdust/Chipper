@@ -59,7 +59,6 @@ import com.playsawdust.chipper.client.widget.EventResponse;
 import com.playsawdust.chipper.client.widget.Widget;
 import com.playsawdust.chipper.client.widget.container.Container;
 import com.playsawdust.chipper.component.Context;
-import com.playsawdust.chipper.component.Engine;
 import com.playsawdust.chipper.component.EngineType;
 import com.playsawdust.chipper.exception.ResourceNotFoundException;
 import com.playsawdust.chipper.img.BufferedImage;
@@ -69,6 +68,7 @@ import com.playsawdust.chipper.math.ProtoColor;
 import com.playsawdust.chipper.math.RectD;
 import com.playsawdust.chipper.math.RectI;
 
+import com.playsawdust.chipper.toolbox.concurrent.SharedThreadPool;
 import com.playsawdust.chipper.toolbox.lipstick.MonotonicTime;
 
 import com.sun.jna.Platform;
@@ -78,7 +78,7 @@ import java.nio.ByteBuffer;
 import java.util.Iterator;
 import java.util.List;
 
-public class ClientEngine implements Engine {
+public class ClientEngineImpl implements ClientEngine {
 	private static final Logger log = LoggerFactory.getLogger(Distribution.NAME);
 
 	private boolean ran = false;
@@ -107,8 +107,6 @@ public class ClientEngine implements Engine {
 	private final List<InputEventProcessor> enteredThings = Lists.newArrayList();
 	private final List<Widget> layersCopy = Lists.newArrayList();
 
-	// TODO replace with an addon loader framework
-	// especially important now that Sawdust is split off and we can't hardcode its Addon class...
 	private Addon defaultAddon = null;
 
 	private boolean mousePosChanged = false;
@@ -171,6 +169,14 @@ public class ClientEngine implements Engine {
 
 		rpmalloc_initialize();
 		rpmalloc_thread_initialize();
+		
+		SharedThreadPool.setInitializer(() -> {
+			rpmalloc_initialize();
+			rpmalloc_thread_initialize();
+		});
+		SharedThreadPool.setFinalizer(() -> {
+			rpmalloc_thread_finalize();
+		});
 
 		scratchPointerBuffer = memAllocPointer(1);
 
@@ -338,6 +344,14 @@ public class ClientEngine implements Engine {
 			loadingMessage = "Initializing audio...";
 			((SoundManagerInternalAccess)SoundManager.obtain(context)).init();
 
+			if (Distribution.DEFAULT_ADDON != null) {
+				try {
+					defaultAddon = (Addon)Class.forName(Distribution.DEFAULT_ADDON).newInstance();
+				} catch (Exception e) {
+					throw new RuntimeException("Failed to create default addon", e);
+				}
+			}
+			
 			if (defaultAddon != null) {
 				loadingMessage = "Initializing addons...";
 				defaultAddon.load(context, this::setLoadingMessage);
@@ -480,10 +494,12 @@ public class ClientEngine implements Engine {
 		return EngineType.SOLE_CLIENT;
 	}
 
+	@Override
 	public void setLoadingMessage(String loadingMessage) {
 		this.loadingMessage = loadingMessage;
 	}
 
+	@Override
 	public void quit() {
 		glfwSetWindowShouldClose(window, true);
 	}
@@ -557,62 +573,77 @@ public class ClientEngine implements Engine {
 		return enteredThings.contains(ep);
 	}
 
+	@Override
 	public void setBlurStrength(@IntRange(from=0, to=100) int blurStrength) {
 		this.blurStrength = blurStrength;
 	}
 
+	@Override
 	public int getBlurStrength() {
 		return blurStrength;
 	}
 
+	@Override
 	public void setGlassColor(ProtoColor color) {
 		this.glassColor = color;
 	}
 
+	@Override
 	public void setGlassOpacity(double opacity) {
 		this.glassOpacity = opacity;
 	}
 
+	@Override
 	public ProtoColor getGlassColor() {
 		return glassColor;
 	}
 
+	@Override
 	public double getGlassOpacity() {
 		return glassOpacity;
 	}
 
+	@Override
 	public void setCanvasPixelScaleSetting(int canvasPixelScaleSetting) {
 		this.canvasPixelScaleSetting = canvasPixelScaleSetting;
 	}
 
+	@Override
 	public boolean getLimitResolution() {
 		return limitResolution;
 	}
 
+	@Override
 	public void setLimitResolution(boolean limitResolution) {
 		this.limitResolution = limitResolution;
 	}
 
+	@Override
 	public boolean getLimitResolutionLinear() {
 		return limitResolutionLinear;
 	}
 
+	@Override
 	public boolean getDrawMouseOnCanvas() {
 		return drawMouseOnCanvas;
 	}
 
+	@Override
 	public void setLimitResolutionLinear(boolean limitResolutionLinear) {
 		this.limitResolutionLinear = limitResolutionLinear;
 	}
 
+	@Override
 	public void setDrawMouseOnCanvas(boolean drawMouseOnCanvas) {
 		this.drawMouseOnCanvas = drawMouseOnCanvas;
 	}
 
+	@Override
 	public int getCanvasPixelScaleSetting() {
 		return canvasPixelScaleSetting;
 	}
 
+	@Override
 	public int getCanvasPixelScale() {
 		return canvasPixelScale;
 	}
@@ -625,6 +656,7 @@ public class ClientEngine implements Engine {
 	/**
 	 * Switch to the given GameState, performing proper cleanup of the current GameState, if any.
 	 */
+	@Override
 	public void switchToState(GameState state) {
 		// TODO error handling
 		if (currentState != null) {
@@ -673,10 +705,12 @@ public class ClientEngine implements Engine {
 	}
 
 	// TODO this should probably go in some sort of Display component
+	@Override
 	public int getWindowWidth() {
 		return windowWidth;
 	}
 
+	@Override
 	public int getWindowHeight() {
 		return windowHeight;
 	}
@@ -692,10 +726,12 @@ public class ClientEngine implements Engine {
 
 	private ByteBuffer noticeBuffer;
 
+	@Override
 	public int getFramesPerSecond() {
 		return fps;
 	}
 
+	@Override
 	public double getMillisPerFrame() {
 		return mspf;
 	}
@@ -1004,13 +1040,14 @@ public class ClientEngine implements Engine {
 				}
 				if (neverRenderedAnything) {
 					drawStbEasyFont("Welcome to Chipper!", 4, 4);
+					drawStbEasyFont("Welcome to Chipper!", 5, 4);
 					drawStbEasyFont("Chipper is just an engine, so on its own, all it can do is show this screen.", 4, 16);
 					//if (addons.isEmpty()) {
 					//	drawStbEasyFont("Write an addon and load it to get started!", 4, 40);
 					if (defaultAddon == null) {
-						drawStbEasyFont("Chipper is incomplete and currently hardcodes the client's addon.", 4, 40);
-						drawStbEasyFont("Change line 112 in ClientEngine to instanciate your Addon subclass.", 4, 52);
-						drawStbEasyFont("(This desperately needs improving.)", 4, 64);
+						drawStbEasyFont("Specify the fully qualified class name of an Addon implementation", 4, 40);
+						drawStbEasyFont("in your dist.jkson with the default_addon key. For example:", 4, 52);
+						drawStbEasyFont("  default_addon: \"com.playsawdust.sawdust.Sawdust\"", 4, 64);
 					} else {
 						drawStbEasyFont("Your addon needs to put a Widget on the layer stack, or set a Renderable.", 4, 40);
 						drawStbEasyFont("(Probably both, they're for different purposes.) Check out LayerController for how to do that.", 4, 52);
@@ -1230,10 +1267,12 @@ public class ClientEngine implements Engine {
 		glfwSwapBuffers(window);
 	}
 
+	@Override
 	public boolean isKeyDown(int key) {
 		return glfwGetKey(this.window, key)==GLFW_PRESS;
 	}
 
+	@Override
 	public boolean isFocused() {
 		return true;
 		//The following seems to cause an intermittent freeze for some reason
@@ -1242,35 +1281,42 @@ public class ClientEngine implements Engine {
 		//return visible && !iconified;
 	}
 
+	@Override
 	public void grabCursor() {
 		if (mouseGrabbed) return;
 		mouseGrabbed = true;
 		glfwSetInputMode(this.window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	}
 
+	@Override
 	public void releaseCursor() {
 		mouseGrabbed = false;
 		glfwSetInputMode(this.window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 	}
 
+	@Override
 	public boolean isCursorGrabbed() {
 		return mouseGrabbed;
 	}
 
+	@Override
 	public int getMouseClick() {
 		int left = glfwGetMouseButton(this.window, GLFW_MOUSE_BUTTON_1)==GLFW_PRESS ? 1 : 0;
 		int right = glfwGetMouseButton(this.window, GLFW_MOUSE_BUTTON_2)==GLFW_PRESS ? 1 : 0;
 		return left | (right << 1);
 	}
 
+	@Override
 	public boolean isMouseDown(int button) {
 		return glfwGetMouseButton(this.window, button)==GLFW_PRESS;
 	}
 
+	@Override
 	public double getCursorX() {
 		return this.lastMouseX;
 	}
 
+	@Override
 	public double getCursorY() {
 		return this.lastMouseY;
 	}
@@ -1280,14 +1326,26 @@ public class ClientEngine implements Engine {
 	 * resources to load.
 	 */
 	private void drawStbEasyFont(String str, int x, int y) {
+		noticeBuffer.limit(noticeBuffer.capacity());
+		noticeBuffer.position(0);
 		int count = stb_easy_font_print(x, y, str, null, noticeBuffer);
 		glColor3f(1, 1, 1);
 		glDisable(GL_TEXTURE_2D);
 		glDisable(GL_DEPTH_TEST);
-		glEnableClientState(GL_VERTEX_ARRAY);
-		glVertexPointer(3, GL_FLOAT, (4*4), noticeBuffer);
-		glDrawArrays(GL_QUADS, 0, count*4);
-		glDisableClientState(GL_VERTEX_ARRAY);
+		if (GL.getCapabilities().glEnableClientState > 0) {
+			// Inexplicably missing in Mesa 20.0.8, even in a compat profile.
+			glEnableClientState(GL_VERTEX_ARRAY);
+			glVertexPointer(3, GL_FLOAT, (4*4), noticeBuffer);
+			glDrawArrays(GL_QUADS, 0, count*4);
+			glDisableClientState(GL_VERTEX_ARRAY);
+		} else {
+			glBegin(GL_QUADS);
+			for (int i = 0; i < count*4; i++) {
+				glVertex3f(noticeBuffer.getFloat(), noticeBuffer.getFloat(), noticeBuffer.getFloat());
+				noticeBuffer.getInt();
+			}
+			glEnd();
+		}
 	}
 
 	private void kawaseDown(Canvas c, GLProgram shdr, int iter, double div, float ofs, int w, int h) {

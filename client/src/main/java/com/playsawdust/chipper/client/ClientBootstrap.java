@@ -14,7 +14,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.playsawdust.chipper.Bootstrap;
-import com.playsawdust.chipper.client.ClientEngine;
 import com.playsawdust.chipper.exception.ForbiddenClassError;
 import com.playsawdust.chipper.rcl.RuledClassLoader;
 
@@ -39,7 +38,7 @@ public class ClientBootstrap extends Bootstrap {
 		public static void run(String[] args) {
 			preStart();
 			try {
-				System.exit(new ClientEngine().run(args));
+				System.exit(new ClientEngineImpl().run(args));
 			} catch (Throwable t) {
 				if (t instanceof ForbiddenClassError) return;
 				log.error("Failed to run the engine", t);

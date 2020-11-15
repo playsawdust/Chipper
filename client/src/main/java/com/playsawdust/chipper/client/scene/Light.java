@@ -9,6 +9,7 @@
 
 package com.playsawdust.chipper.client.scene;
 
+import com.playsawdust.chipper.SceneObject;
 import com.playsawdust.chipper.math.ProtoColor;
 
 public class Light extends SceneObject {
