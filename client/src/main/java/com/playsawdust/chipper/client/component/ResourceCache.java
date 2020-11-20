@@ -61,7 +61,7 @@ import blue.endless.jankson.api.SyntaxError;
 public final class ResourceCache implements Component {
 	private static final Logger log = LoggerFactory.getLogger(ResourceCache.class);
 
-	private static final Jankson jkson = Jankson.builder().build();
+	private static final Jankson jkson = Jankson.builder().allowBareRootObject().build();
 
 	private final ConcurrentMap<Identifier, Slice> resourceBytes = Maps.newConcurrentMap();
 	private final ConcurrentMap<Identifier, String> resourceStrings = Maps.newConcurrentMap();
@@ -317,11 +317,10 @@ public final class ResourceCache implements Component {
 		Preconditions.checkArgument(id != null, "id cannot be null");
 		JsonObject cached = janksonObjects.get(id);
 		if (cached != null) return cached.clone();
-		String text = slurpResourceText(id);
-		// temporary hack until Jankson gets support for braceless files
-		if (!text.startsWith("{")) text = "{"+text+"}";
-		try {
-			return jkson.load(text);
+		try (InputStream in = openResource(id)) {
+			return jkson.load(in);
+		} catch (IOException e) {
+			throw new ResourceNotFoundException("Failed to load resource", id, e);
 		} catch (SyntaxError e) {
 			throw new ResourceNotFoundException("Jankson syntax error: "+e.getCompleteMessage()+" in resource", id);
 		}
