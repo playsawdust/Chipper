@@ -1332,20 +1332,10 @@ public class ClientEngineImpl implements ClientEngine {
 		glColor3f(1, 1, 1);
 		glDisable(GL_TEXTURE_2D);
 		glDisable(GL_DEPTH_TEST);
-		if (GL.getCapabilities().glEnableClientState > 0) {
-			// Inexplicably missing in Mesa 20.0.8, even in a compat profile.
-			glEnableClientState(GL_VERTEX_ARRAY);
-			glVertexPointer(3, GL_FLOAT, (4*4), noticeBuffer);
-			glDrawArrays(GL_QUADS, 0, count*4);
-			glDisableClientState(GL_VERTEX_ARRAY);
-		} else {
-			glBegin(GL_QUADS);
-			for (int i = 0; i < count*4; i++) {
-				glVertex3f(noticeBuffer.getFloat(), noticeBuffer.getFloat(), noticeBuffer.getFloat());
-				noticeBuffer.getInt();
-			}
-			glEnd();
-		}
+		glEnableClientState(GL_VERTEX_ARRAY);
+		glVertexPointer(3, GL_FLOAT, (4*4), noticeBuffer);
+		glDrawArrays(GL_QUADS, 0, count*4);
+		glDisableClientState(GL_VERTEX_ARRAY);
 	}
 
 	private void kawaseDown(Canvas c, GLProgram shdr, int iter, double div, float ofs, int w, int h) {

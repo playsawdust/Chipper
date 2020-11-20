@@ -9,10 +9,51 @@
 
 package com.playsawdust.chipper.client;
 
+import org.lwjgl.opengl.GL;
+import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
+import org.lwjgl.system.NativeType;
+import org.slf4j.LoggerFactory;
+
+import com.playsawdust.chipper.toolbox.Ternary;
 
 /**
  * Extends the global OpenGL base used by Chipper. Currently, this is OpenGL 1.2.
- * This class makes it very easy to change the base OpenGL target version.
+ * This class makes it very easy to change the base OpenGL target version, and add workarounds.
  */
-public class BaseGL extends GL12 {}
+public class BaseGL extends GL12 {
+	
+	private static Ternary driverMissingClientState = Ternary.MAYBE;
+	
+	private static void checkClientStateMissing() {
+		if (driverMissingClientState == Ternary.MAYBE) {
+			driverMissingClientState = GL.getCapabilities().glEnableClientState == 0 ? Ternary.YES : Ternary.NO;
+			LoggerFactory.getLogger("GL").warn("glEnableClientState is missing in this driver. Enabling workaround.");
+		}
+	}
+	
+	/**
+	 * @see GL11#glEnableClientState(int)
+	 */
+	public static void glEnableClientState(@NativeType("GLenum") int cap) {
+		checkClientStateMissing();
+		if (driverMissingClientState == Ternary.YES) {
+			glEnable(cap);
+		} else {
+			GL12.glEnableClientState(cap);
+		}
+	}
+	
+	/**
+	 * @see GL11#glDisableClientState(int)
+	 */
+	public static void glDisableClientState(@NativeType("GLenum") int cap) {
+		checkClientStateMissing();
+		if (driverMissingClientState == Ternary.YES) {
+			glDisable(cap);
+		} else {
+			GL12.glDisableClientState(cap);
+		}
+	}
+
+}

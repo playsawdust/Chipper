@@ -263,7 +263,7 @@ public class SoundManager extends SoundManagerInternalAccess implements Componen
 			log.info("Nothing is playing. Not delaying shutdown.");
 			return;
 		}
-		double lastTime = MonotonicTime.seconds();
+		double start = MonotonicTime.seconds();
 		double time = 0;
 		if (allStopped) {
 			log.info("Fading out music...");
@@ -273,9 +273,7 @@ public class SoundManager extends SoundManagerInternalAccess implements Componen
 			log.info("Waiting for sounds to stop...");
 		}
 		while (true) {
-			double delta = MonotonicTime.seconds()-lastTime;
-			lastTime = MonotonicTime.seconds();
-			time += delta;
+			time = MonotonicTime.deltaSeconds(start);
 			if (time >= 3) {
 				log.info("More than 3 seconds have passed. Quitting now.");
 				break;

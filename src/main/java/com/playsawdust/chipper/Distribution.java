@@ -60,8 +60,10 @@ public class Distribution {
 				System.exit(255);
 				throw new Error();
 			} else {
-				String s = "{"+new String(ByteStreams.toByteArray(is), Charsets.UTF_8)+"}";
-				JsonObject obj = Jankson.builder().build().load(s);
+				String s = new String(ByteStreams.toByteArray(is), Charsets.UTF_8);
+				JsonObject obj = Jankson.builder()
+						.allowBareRootObject()
+						.build().load(s);
 				ID = getRequired(obj, "id");
 				if (ID.matches("[^a-z0-9_]")) {
 					throw new IllegalArgumentException("id field must contain only lowercase alphanumerics and underscores");

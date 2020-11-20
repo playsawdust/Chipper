@@ -135,7 +135,7 @@ public abstract class GLVertexBuffer extends AbstractNativeResource {
 		// ATTN should we always use display lists on nVidia?
 		// there's inklings around of nV drivers being faster with display lists than VBOs
 		// needs testing.
-		if (GL.getCapabilities().GL_ARB_vertex_buffer_object && GL.getCapabilities().glEnableClientState > 0) {
+		if (GL.getCapabilities().GL_ARB_vertex_buffer_object) {
 			return new ImplVBO();
 		} else {
 			return new ImplDL();
